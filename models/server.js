@@ -4,6 +4,7 @@ const http = require("http");
 const socketio = require("socket.io");
 const path = require("path");
 const { dbConnection } = require("../database/config");
+const cors = require("cors");
 
 const Sockets = require("./sockets");
 
@@ -27,7 +28,12 @@ class Server {
   middlewares() {
     // Desplegar el directorio público
     this.app.use(express.static(path.resolve(__dirname, "../public")));
+
     // TODO: CORS
+    this.app.use(cors())
+
+    // bodyParse
+    this.app.use(express.json())
 
     // Endpoints
     this.app.use('/api/login', require('../router/auth'))
