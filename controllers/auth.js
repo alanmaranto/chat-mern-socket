@@ -14,8 +14,6 @@ const createUser = async (req, res = response) => {
       });
     }
 
-    //TODO: encrypt password
-
     // Save in DB
     const user = await saveUser(req.body);
 
