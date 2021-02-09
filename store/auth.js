@@ -14,6 +14,16 @@ const saveUser = async (data) => {
   }
 };
 
+const getUser = async (email) => {
+  try {
+    const user = await User.findOne({ email });
+    return user;
+  } catch (error) {
+    return error;
+  }
+};
+
 module.exports = {
   saveUser,
+  getUser
 };

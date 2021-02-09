@@ -1,8 +1,8 @@
 const { response } = require("express");
 const User = require("../models/user");
-const { saveUser } = require("../store/auth");
-const { generateJWT} = require("../helpers/jwt")
-
+const { saveUser, getUser } = require("../store/auth");
+const { generateJWT } = require("../helpers/jwt");
+const { validatePassword } = require("../helpers/bcrypt");
 
 const createUser = async (req, res = response) => {
   try {
@@ -10,7 +10,7 @@ const createUser = async (req, res = response) => {
 
     const emailExists = await User.findOne({ email });
     if (emailExists) {
-      return res.status(400).json({
+      return res.status(404).json({
         ok: false,
         msg: "email already exists",
       });
@@ -19,7 +19,8 @@ const createUser = async (req, res = response) => {
     // Save in DB
     const user = await saveUser(req.body);
 
-    const token = await generateJWT(user._id)
+    // generate token
+    const token = await generateJWT(user._id);
 
     res.json({ user, token });
   } catch (error) {
@@ -34,11 +35,27 @@ const createUser = async (req, res = response) => {
 const login = async (req, res = response) => {
   const { email, password } = req.body;
 
+  const user = await User.findOne({ email });
+  if (!user) {
+    return res.status(404).json({
+      ok: false,
+      msg: "User not found",
+    });
+  }
+
+  const validPassword = validatePassword(password, user.password);
+  if (!validPassword) {
+    return res.status(400).json({
+      ok: false,
+      msg: "Passwords dont match",
+    });
+  }
+
+  const token = await generateJWT(user._id);
+
   res.json({
-    ok: true,
-    msg: "Login",
-    email,
-    password,
+    user,
+    token,
   });
 };
 
