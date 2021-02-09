@@ -1,10 +1,12 @@
 const { response } = require("express");
 const User = require("../models/user");
 const { saveUser } = require("../store/auth");
+const { generateJWT} = require("../helpers/jwt")
+
 
 const createUser = async (req, res = response) => {
   try {
-    const { email, password } = req.body;
+    const { email } = req.body;
 
     const emailExists = await User.findOne({ email });
     if (emailExists) {
@@ -17,7 +19,9 @@ const createUser = async (req, res = response) => {
     // Save in DB
     const user = await saveUser(req.body);
 
-    res.json({ user });
+    const token = await generateJWT(user._id)
+
+    res.json({ user, token });
   } catch (error) {
     console.log(error);
     res.status(500).json({
