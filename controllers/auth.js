@@ -1,6 +1,6 @@
 const { response } = require("express");
 const User = require("../models/user");
-const { saveUser, getUser } = require("../store/auth");
+const { saveUser } = require("../store/auth");
 const { generateJWT } = require("../helpers/jwt");
 const { validatePassword } = require("../helpers/bcrypt");
 
