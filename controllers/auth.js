@@ -22,7 +22,7 @@ const createUser = async (req, res = response) => {
     // generate token
     const token = await generateJWT(user._id);
 
-    res.json({ user, token });
+    res.json({ user, token, ok: true });
   } catch (error) {
     console.log(error);
     res.status(500).json({
