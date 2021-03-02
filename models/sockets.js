@@ -1,5 +1,5 @@
 const { verifyJWT } = require("../helpers/jwt");
-
+const { userConnected, userDisconnected } = require('../controllers/socket.js')
 class Sockets {
   constructor(io) {
     this.io = io;
@@ -9,7 +9,7 @@ class Sockets {
 
   socketEvents() {
     // On connection
-    this.io.on("connection", (socket) => {
+    this.io.on("connection", async (socket) => {
       const [isValid, uid] = verifyJWT(socket.handshake.query["x-token"]);
 
       if (!isValid) {
@@ -18,8 +18,11 @@ class Sockets {
       }
       console.log("cliente conectado", uid);
 
-      socket.on("disconnect", () => {
+      await userConnected(uid)
+
+      socket.on("disconnect", async () => {
         console.log("cliente desconectado", uid);
+        await userDisconnected(uid)
       });
     });
   }
