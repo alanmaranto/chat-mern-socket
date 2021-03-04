@@ -23,9 +23,16 @@ class Sockets {
       console.log("cliente conectado", uid);
 
       await userConnected(uid);
+      // Join a user to a socket.io room
+      socket.join(uid);
 
       // Emit all connected users
       this.io.emit("get-users", await getUsers());
+
+      // Listen when a client sends a private message
+      socket.on("private-message", (payload) => {
+        console.log(payload);
+      });
 
       socket.on("disconnect", async () => {
         console.log("cliente desconectado", uid);
