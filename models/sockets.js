@@ -3,6 +3,7 @@ const {
   userConnected,
   userDisconnected,
   getUsers,
+  saveMessage
 } = require("../controllers/socket.js");
 class Sockets {
   constructor(io) {
@@ -30,8 +31,10 @@ class Sockets {
       this.io.emit("get-users", await getUsers());
 
       // Listen when a client sends a private message
-      socket.on("private-message", (payload) => {
+      socket.on("private-message", async (payload) => {
         console.log(payload);
+        const message = await saveMessage(payload)
+        console.log('ms', message)
       });
 
       socket.on("disconnect", async () => {
