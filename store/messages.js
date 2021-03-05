@@ -7,7 +7,7 @@ const getChat = async (data) => {
     const last30messages = await Message.find({
       $or: [
         { from: myUid, to: messagesFrom },
-        { from: messagesFrom, to: messagesFrom },
+        { from: messagesFrom, to: myUid },
       ],
     })
       .sort({ createdAt: "desc" })
@@ -16,7 +16,7 @@ const getChat = async (data) => {
     return last30messages;
   } catch (error) {
     console.log(error);
-    return error
+    return error;
   }
 };
 
