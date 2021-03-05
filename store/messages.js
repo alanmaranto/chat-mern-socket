@@ -10,7 +10,7 @@ const getChat = async (data) => {
         { from: messagesFrom, to: myUid },
       ],
     })
-      .sort({ createdAt: "desc" })
+      .sort({ createdAt: "asc" })
       .limit(30);
 
     return last30messages;
