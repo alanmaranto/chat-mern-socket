@@ -32,9 +32,9 @@ class Sockets {
 
       // Listen when a client sends a private message
       socket.on("private-message", async (payload) => {
-        console.log(payload);
-        const message = await saveMessage(payload)
-        console.log('ms', message)
+        const message = await saveMessage(payload);
+        this.io.to(payload.to).emit('private-message', message)
+        this.io.to(payload.from).emit('private-message', message)
       });
 
       socket.on("disconnect", async () => {
